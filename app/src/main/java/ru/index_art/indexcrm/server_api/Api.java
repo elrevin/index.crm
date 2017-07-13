@@ -1,6 +1,7 @@
 package ru.index_art.indexcrm.server_api;
 
 import android.util.Base64;
+import android.util.Log;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
