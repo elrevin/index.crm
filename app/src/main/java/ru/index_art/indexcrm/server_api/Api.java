@@ -3,6 +3,9 @@ package ru.index_art.indexcrm.server_api;
 import android.util.Base64;
 import android.util.Log;
 
+import java.io.IOException;
+
+import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -31,7 +34,24 @@ public class Api {
         Observable<SACheckLoginAndPassword> result = request.request(getBasicAuthString(login, password));
         Observable<Boolean> toReturn = result.subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(res -> res.getStatus());
+                .map(res -> res.getStatus())
+                .onErrorReturn(error -> {
+                    if (error instanceof HttpException) {
+                        int code = ((HttpException) error).code();
+
+                        Log.e("index.art", "Http error: " + Integer.toString(code));
+                        Log.e("index.art", "Http error: " + ((HttpException) error).message());
+
+                        if (code == 401) {
+                            return Boolean.valueOf(false);
+                        }
+                    }
+
+                    if (error instanceof IOException) {
+                        Log.e("index.art", "IO error: " + ((IOException) error).getMessage());
+                    }
+                    return null;
+                });
         return toReturn;
     }
 }

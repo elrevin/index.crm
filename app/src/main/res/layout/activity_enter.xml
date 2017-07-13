@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.index_art.indexcrm.EnterActivity">
+    tools:context="ru.index_art.indexcrm.activities.enter.EnterActivity">
 
     <TextView
         android:layout_width="wrap_content"
