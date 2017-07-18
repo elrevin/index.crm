@@ -1,4 +1,4 @@
-package ru.index_art.indexcrm.server_api;
+package ru.index_art.indexcrm.data.api;
 
 import android.util.Base64;
 import android.util.Log;
@@ -9,20 +9,21 @@ import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import ru.index_art.indexcrm.models.SACheckLoginAndPassword;
+import ru.index_art.indexcrm.data.requests.RCheckLoginAndPassword;
+import ru.index_art.indexcrm.data.requests.SACheckLoginAndPassword;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class Api {
+public class ServerApi {
 
-    public static final Api INSTANCE = new Api();
+    public static final ServerApi INSTANCE = new ServerApi();
 
     private String getBasicAuthString(String login, String password) {
         return "Basic " + Base64.encodeToString(String.format("%s:%s", login, password).getBytes(), Base64.NO_WRAP);
     }
 
-    public Observable<Boolean> checkLoginAndPassword(String login, String password) {
+    public Observable<String> checkCommonLoginAndPassword(String login, String password) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -32,9 +33,12 @@ public class Api {
 
         RCheckLoginAndPassword request = retrofit.create(RCheckLoginAndPassword.class);
         Observable<SACheckLoginAndPassword> result = request.request(getBasicAuthString(login, password));
-        Observable<Boolean> toReturn = result.subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(res -> res.getStatus())
+        Observable<String> toReturn = result.map(res -> {
+                    if (res.getStatus()) {
+                        return "commonLoginOk";
+                    }
+                    return "commonLoginIncorrect";
+                })
                 .onErrorReturn(error -> {
                     if (error instanceof HttpException) {
                         int code = ((HttpException) error).code();
@@ -43,14 +47,15 @@ public class Api {
                         Log.e("index.art", "Http error: " + ((HttpException) error).message());
 
                         if (code == 401) {
-                            return Boolean.valueOf(false);
+                            return "commonLoginIncorrect";
                         }
                     }
 
                     if (error instanceof IOException) {
                         Log.e("index.art", "IO error: " + ((IOException) error).getMessage());
                     }
-                    return null;
+                    Log.e("index.art", "HZ error: " + error.getMessage());
+                    return "networkError";
                 });
         return toReturn;
     }
