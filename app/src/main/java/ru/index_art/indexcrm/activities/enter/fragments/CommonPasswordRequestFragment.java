@@ -70,4 +70,10 @@ public class CommonPasswordRequestFragment extends Fragment {
                     }
                 });
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        enterActivity.onCommonPasswordRequestFragmentResume();
+    }
 }

@@ -69,6 +69,10 @@ public class EnterActivity extends AppCompatActivity {
         ft.commit();
     }
 
+    public void onCommonPasswordRequestFragmentResume() {
+        hideToolbar();
+    }
+
     void hideToolbar() {
         if (toolbar != null) {
             toolbar.setVisibility(View.GONE);

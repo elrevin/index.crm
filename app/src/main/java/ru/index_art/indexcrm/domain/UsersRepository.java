@@ -2,6 +2,7 @@ package ru.index_art.indexcrm.domain;
 
 import ru.index_art.indexcrm.data.api.PreferencesApi;
 import ru.index_art.indexcrm.data.api.ServerApi;
+import ru.index_art.indexcrm.data.models.GetToken;
 import rx.Observable;
 
 public class UsersRepository {
@@ -31,6 +32,10 @@ public class UsersRepository {
         PreferencesApi.INSTANCE.setPassword(_password);
 
         return ServerApi.INSTANCE.checkCommonLoginAndPassword(_login, _password);
+    }
+
+    public Observable<GetToken> getTokenByLoginAndPassword(String _login, String _password) {
+        return ServerApi.INSTANCE.getTokenByLoginAndPassword(_login, _password);
     }
 
 }
