@@ -2,7 +2,7 @@ package ru.index_art.indexcrm.activities.enter.fragments;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +57,7 @@ public class PersonalLoginAndPasswordRequestFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ansv -> {
                     if (ansv.status) {
-                        Toast.makeText(enterActivity, "All OK!!!!", Toast.LENGTH_LONG).show();
+                        enterActivity.onTokenSet();
                     } else if (ansv.error.equals("networkError")) {
                         Toast.makeText(enterActivity, "Похоже отсутствует подключение к интернету. Или сервер не доступен.", Toast.LENGTH_LONG).show();
                     } else if (ansv.error.equals("commonLoginIncorrect")) {

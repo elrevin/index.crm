@@ -3,7 +3,6 @@ package ru.index_art.indexcrm.activities.enter.fragments;
 
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +10,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.logging.Logger;
-
 import ru.index_art.indexcrm.R;
 import ru.index_art.indexcrm.activities.enter.EnterActivity;
 import ru.index_art.indexcrm.domain.UsersRepository;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -62,18 +58,12 @@ public class CommonPasswordRequestFragment extends Fragment {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ansv -> {
                     if (ansv.equals("commonLoginOk")) {
-                        Toast.makeText(enterActivity, "All OK", Toast.LENGTH_LONG).show();
+                        enterActivity.onCommonLoginAndPasswordSet();
                     } else if (ansv.equals("networkError")) {
                         Toast.makeText(enterActivity, "Похоже отсутствует подключение к интернету. Или сервер не доступен.", Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(enterActivity, "Логин или пароль введены не правильно", Toast.LENGTH_LONG).show();
                     }
                 });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        enterActivity.onCommonPasswordRequestFragmentResume();
     }
 }

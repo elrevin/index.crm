@@ -3,6 +3,7 @@ package ru.index_art.indexcrm.domain;
 import ru.index_art.indexcrm.data.api.PreferencesApi;
 import ru.index_art.indexcrm.data.api.ServerApi;
 import ru.index_art.indexcrm.data.models.GetToken;
+import ru.index_art.indexcrm.data.models.Model;
 import rx.Observable;
 
 public class UsersRepository {
@@ -11,7 +12,7 @@ public class UsersRepository {
 
     public static final UsersRepository INSTANCE = new UsersRepository();
 
-    public Observable<String> isLogin() {
+    public Observable<String> checkCommonLoginAndPassword() {
         login = PreferencesApi.INSTANCE.getLogin();
         password = PreferencesApi.INSTANCE.getPassword();
         Observable<String> ret = ServerApi.INSTANCE.checkCommonLoginAndPassword(login, password);
@@ -35,7 +36,20 @@ public class UsersRepository {
     }
 
     public Observable<GetToken> getTokenByLoginAndPassword(String _login, String _password) {
-        return ServerApi.INSTANCE.getTokenByLoginAndPassword(_login, _password);
+        return ServerApi.INSTANCE.getTokenByLoginAndPassword(_login, _password)
+                .map(ansv -> {
+                    if (ansv.status) {
+                        PreferencesApi.INSTANCE.setToken(ansv.token);
+                        PreferencesApi.INSTANCE.setUserId(ansv.userId);
+                    }
+                    return ansv;
+                });
     }
 
+    public Observable<Model> checkToken() {
+        String token = PreferencesApi.INSTANCE.getToken();
+        String userId = PreferencesApi.INSTANCE.getUserId();
+
+        return ServerApi.INSTANCE.checkToken(token, userId);
+    }
 }
