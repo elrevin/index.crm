@@ -3,6 +3,8 @@ package ru.index_art.indexcrm;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.stetho.Stetho;
+
 public class App extends Application {
     private static Context mContext;
 
@@ -10,6 +12,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = getApplicationContext();
+        Stetho.initializeWithDefaults(this);
     }
 
     public static Context getContext() {
