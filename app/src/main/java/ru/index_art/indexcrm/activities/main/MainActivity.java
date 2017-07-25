@@ -18,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        ((EditText)findViewById(R.id.edt)).setText(savedInstanceState.getString("edt"));
     }
 
     @Override
@@ -50,5 +49,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("index.art", "create");
+        if (savedInstanceState != null) {
+            Log.d("index.art", "ReCreate");
+        }
     }
 }
